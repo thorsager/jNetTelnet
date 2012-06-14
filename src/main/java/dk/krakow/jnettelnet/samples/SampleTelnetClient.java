@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.krakow.net.telnet.samples;
+package dk.krakow.jnettelnet.samples;
 
-import dk.krakow.net.telnet.Session;
-import dk.krakow.net.telnet.SessionException;
+import dk.krakow.jnettelnet.Session;
+import dk.krakow.jnettelnet.SessionException;
 
 /**
  * <p>

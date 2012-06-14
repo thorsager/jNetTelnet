@@ -1,4 +1,4 @@
-package dk.krakow.net.telnet;
+package dk.krakow.jnettelnet;
 
 /**
  * Exception class to bundle up most of the Exceptions that

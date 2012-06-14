@@ -1,4 +1,4 @@
-package dk.krakow.net.telnet;
+package dk.krakow.jnettelnet;
 
 /**
  * Describes the SessionOptionHandlers, all classes that are to handle 

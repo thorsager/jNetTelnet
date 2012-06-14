@@ -1,4 +1,4 @@
-package dk.krakow.net.telnet;
+package dk.krakow.jnettelnet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

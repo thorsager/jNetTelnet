@@ -1,6 +1,6 @@
-package dk.krakow.net.telnet.samples;
+package dk.krakow.jnettelnet.samples;
 
-import dk.krakow.net.telnet.CiscoSession;
+import dk.krakow.jnettelnet.CiscoSession;
 
 /**
  * <p>

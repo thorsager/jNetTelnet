@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dk.krakow.net.telnet;
+package dk.krakow.jnettelnet;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  *
  * @author Michael Thorsager &lt;thorsager@gmail.com&gt;
  */
-public class CiscoSession extends dk.krakow.net.telnet.Session implements SessionOptionHandler {
+public class CiscoSession extends dk.krakow.jnettelnet.Session implements SessionOptionHandler {
 
 	/** String that is the last char of an Enabled prompt */
 	private static final String ENABLED_PROMPT_CHR = "#";
