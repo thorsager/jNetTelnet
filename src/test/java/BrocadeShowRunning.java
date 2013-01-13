@@ -28,30 +28,35 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package dk.krakow.jnettelnet;
+import dk.krakow.jnettelnet.BrocadeSession;
+import dk.krakow.jnettelnet.SessionException;
+
+import java.io.IOException;
 
 /**
- * Describes the SessionOptionHandlers, all classes that are to handle 
- * SessionOptions from the Session must implement this interface.
- * 
- * @author Michael Thorsager &lt;thorsager@gmail.com&gt;
+ * This class is a "working" example of how the library can be use, but is VERY
+ * simplistic and I only use it because I'm to lazy to write some real tests..
  */
-public interface SessionOptionHandler {
+public class BrocadeShowRunning {
 
-	/**
-	 * Method that is call from the <code>Session</code> with a list of SessionOptions
-	 * read from the remote host.
-	 * <p>
-	 * The handler must read and "understand" all the options, and generate a new
-	 * set of options that are to be transmitted to the remote host.
-	 * </p>
-	 * <p>
-	 * Any options sent to remote host should confirm to the protocol described 
-	 * in RFC-854 and RFC-855
-	 * </p>
-	 * 
-	 * @param optionList Options read from the remote host
-	 * @return  Options to be sent to the remote host.
-	 */
-	public SessionOptionList onOptionsRead(SessionOptionList optionList);
+    public static void main(String[] args) throws IOException {
+        if (args.length < 3) {
+            System.out.println("USAGE: java BrocadeShowRunning <ip/hostname> <telnetpasswd> <enablepasswd> ");
+            System.exit(1);
+        }
+
+        BrocadeSession bs = new BrocadeSession(args[0]);
+        try {
+            bs.connect();
+            bs.login(null,args[1]);
+
+           bs.enable(args[2]);
+            String[] output = bs.cmd("show running");
+            for ( String s: output) System.out.println(s);
+            bs.close();
+        } catch (SessionException se) {
+            se.printStackTrace();
+        }
+
+    }
 }
