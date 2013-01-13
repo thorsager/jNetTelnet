@@ -27,13 +27,18 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dk.krakow.jnettelnet;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
- * Extends the <Code>Session</code> to Cisco devices, adding features to handle
+ * Extends the <Code>Session</code> to Brocade devices, adding features to handle
  * authentication and such.
  * <p>
  * Please note that this Class has an Internal <code>SessionOptionHandler</code>
@@ -44,7 +49,7 @@ import java.util.regex.Pattern;
  *
  * @author Michael Thorsager &lt;thorsager@gmail.com&gt;
  */
-public class CiscoSession extends dk.krakow.jnettelnet.Session implements SessionOptionHandler {
+public class BrocadeSession extends Session implements SessionOptionHandler {
 
 	/** String that is the last char of an Enabled prompt */
 	private static final String ENABLED_PROMPT_CHR = "#";
@@ -59,7 +64,7 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	 * Create Session on the default Telnet tcp port-number of 23
 	 * @param hostname  Name of remote host
 	 */
-	public CiscoSession(String hostname) {
+	public BrocadeSession(String hostname) {
         super(hostname, null, null,Pattern.compile(PROMPT_PATTERN));
 	}
 
@@ -69,29 +74,31 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	 * @param port port-number
 	 */
 	@SuppressWarnings("LeakingThisInConstructor")
-	public CiscoSession(String hostname, Integer port) {
+	public BrocadeSession(String hostname, Integer port) {
 		super(hostname, port, null,Pattern.compile(PROMPT_PATTERN));
 		this.setSessionOptionHandler(this);
 	}
 
 	/**
-	 * Authenticate against the Cisco login-prompt, using username/password or just password
+	 * Authenticate against the Brocade login-prompt, using username/password or just password
 	 * <p>
-	 * Cisco hosts may or may not ask for at user-name when a Telnet connection is started.
+	 * Brocade hosts may or may not ask for at user-name when a Telnet connection is started.
 	 * If the the host asks for at username and none is present a <code>SessionException</code>
 	 * will be thrown.
 	 * </p>
-	 * 
+	 *
 	 * @param username Username to be used for authentication or null if not used
 	 * @param password Password to be used for authentication.
-	 * @throws SessionException If username is needed and not present or if authentication fails
-	 * @throws IOException If communication with remote host fails.
+	 * @throws dk.krakow.jnettelnet.SessionException If username is needed and not present or if authentication fails
+	 * @throws java.io.IOException If communication with remote host fails.
 	 */
 	public void login(String username, String password) throws SessionException, IOException {
 		if ( ! socket.isConnected() ) throw new SessionException("Not Connected!");
 		ReadData read = _read2prompt();
 
-		if ( read.getPrompt().equals("User:") ) {
+        System.out.println(read);
+
+		if ( read.getPrompt().endsWith("User:") ) {
 			if ( username == null ) throw new SessionException("Need username to Authenticate");
 			_sendln(username);
 			_read2prompt();
@@ -103,7 +110,7 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 			read = _read2prompt();
 		}
 
-		if ( read.getPrompt().equals("User:") || read.getPrompt().equals("Password:") ) {
+		if ( read.getPrompt().endsWith("User:") || read.getPrompt().equals("Password:") ) {
 			throw new SessionException("Authentication failed") ;
 		} else  {
             cmd("terminal length 0");
@@ -117,7 +124,7 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	 * output.
 	 * @param command Command line to be executed on remote host
 	 * @return Remote host output
-	 * @throws SessionException If unable to execute command.
+	 * @throws dk.krakow.jnettelnet.SessionException If unable to execute command.
 	 */
 	public String[] cmd(String command) throws SessionException {
 		try {
@@ -133,7 +140,7 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	/**
 	 * Switch to enabled mode on remote host
 	 * @param password enable secret to be used on the remote host
-	 * @throws SessionException If unable to enable.
+	 * @throws dk.krakow.jnettelnet.SessionException If unable to enable.
 	 */
 	public void enable(String password) throws SessionException {
 		try {
