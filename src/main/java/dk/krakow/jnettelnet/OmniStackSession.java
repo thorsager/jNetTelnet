@@ -123,7 +123,7 @@ public class OmniStackSession extends Session implements SessionOptionHandler {
 		try {
 			_sendln(command);
 			ReadData read = _read2prompt();
-			if ( read.get(0).equals(command) ) read.remove(0);
+			if (!read.isEmpty() && read.get(0).equals(command) ) read.remove(0);
 			return read.getDataAsStringArray();
 		} catch (IOException ex) {
 			throw new SessionException("Unable to send command",ex);
