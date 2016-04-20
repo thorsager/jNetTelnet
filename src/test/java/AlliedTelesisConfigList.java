@@ -1,3 +1,4 @@
+import dk.krakow.jnettelnet.AlliedTelesisSession;
 import dk.krakow.jnettelnet.OmniStackSession;
 import dk.krakow.jnettelnet.SessionException;
 
@@ -15,7 +16,7 @@ public class AlliedTelesisConfigList {
             System.exit(1);
         }
 
-        OmniStackSession bs = new OmniStackSession(args[0]);
+        AlliedTelesisSession bs = new AlliedTelesisSession(args[0]);
         try {
             bs.connect();
             bs.login(args[1],args[2]);
