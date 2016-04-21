@@ -33,6 +33,7 @@ package dk.krakow.jnettelnet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -162,7 +163,8 @@ public class Session {
 	 */
 	public void connect() throws SessionException {
 		try {
-			socket = new Socket(hostname, port);
+			socket = new Socket();
+			socket.connect(new InetSocketAddress(hostname, port),5000);
 
 			input = socket.getInputStream();
 			output = socket.getOutputStream();
