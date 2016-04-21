@@ -27,6 +27,5 @@ public class AlliedTelesisConfigList {
         } catch (SessionException se) {
             se.printStackTrace();
         }
-
     }
 }

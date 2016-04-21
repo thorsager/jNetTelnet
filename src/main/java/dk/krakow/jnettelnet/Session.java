@@ -163,8 +163,9 @@ public class Session {
 	 */
 	public void connect() throws SessionException {
 		try {
-			socket = new Socket();
-			socket.connect(new InetSocketAddress(hostname, port),5000);
+			socket = new Socket(hostname,port);
+//			socket.connect(new InetSocketAddress(hostname, port),5000);
+            socket.setSoTimeout(5000);
 
 			input = socket.getInputStream();
 			output = socket.getOutputStream();
