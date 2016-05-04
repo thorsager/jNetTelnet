@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -54,6 +55,7 @@ import java.util.regex.Matcher;
 public class Session {
 
 	private SessionOptionHandler sesOptHand = null;
+    private static final int DEFAULT_SOCKET_TIMEOUT = 5000;
 	private static int IAC = 0xFF;
 	private String hostname;
 	protected int port;
@@ -164,19 +166,45 @@ public class Session {
 	public void connect() throws SessionException {
 		try {
 			socket = new Socket(hostname,port);
-//			socket.connect(new InetSocketAddress(hostname, port),5000);
-            socket.setSoTimeout(5000);
+            socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
 
 			input = socket.getInputStream();
 			output = socket.getOutputStream();
 
 			_readln();// get options
 		} catch (UnknownHostException ex) {
-			throw new SessionException("Unable to connect to '" + hostname + "'", ex);
+			throw new SessionException("Unable to connect to '" + hostname + "': "+ex.getMessage(), ex);
 		} catch (IOException ex) {
-			throw new SessionException("Unable to connect to '" + hostname + "'", ex);
+			throw new SessionException("Unable to connect to '" + hostname + "': "+ex.getMessage(), ex);
 		}
 	}
+
+    /**
+     * Set Socket Timeout
+     * This method can be used to set the timeout of the underlying Socket
+     * @param timeout timeout in ms
+     * @throws SessionException if unable to set timeout
+     */
+	public void setSocketTimeout(int timeout) throws SessionException {
+		try {
+			socket.setSoTimeout(timeout);
+		} catch (SocketException e) {
+			throw new SessionException("Unable to set Socket TimeOut: "+e.getMessage(), e);
+		}
+	}
+
+    /**
+     * Reset Socket Timeout
+     * This method resets the timeout to Session default
+     * @throws SessionException if unable to set Session Timeout
+     */
+    public void resetSocketTimeout() throws SessionException {
+        try {
+            socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
+        } catch (SocketException e) {
+            throw new SessionException("Unable to reset Socket TimeOut: "+e.getMessage(), e);
+        }
+    }
 
 	/**
 	 * Set the SessionOptoinHanlder class for the session.
