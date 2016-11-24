@@ -33,10 +33,7 @@ package dk.krakow.jnettelnet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -56,6 +53,7 @@ public class Session {
 
 	private SessionOptionHandler sesOptHand = null;
     private static final int DEFAULT_SOCKET_TIMEOUT = 5000;
+	private static final int DEFAULT_SOCKET_CONNECT_TIMEOUT = 3000;
 	private static int IAC = 0xFF;
 	private String hostname;
 	protected int port;
@@ -165,7 +163,8 @@ public class Session {
 	 */
 	public void connect() throws SessionException {
 		try {
-			socket = new Socket(hostname,port);
+			socket = new Socket();
+			socket.connect(new InetSocketAddress(hostname,port),DEFAULT_SOCKET_CONNECT_TIMEOUT);
             socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
 
 			input = socket.getInputStream();
