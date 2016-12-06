@@ -50,10 +50,17 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	private static final String ENABLED_PROMPT_CHR = "#";
 
 	/** String Containing the regex. to find prompts */
-	private static final String PROMPT_PATTERN = "(User:|Password:|\\w+[>#]|\\w+\\(config\\)#|\\w+\\(config-\\w+\\)#)$" ;
+	private static final String PROMPT_PATTERN = "(Username:|User:|Password:|\\w+[>#]|\\w+\\(config\\)#|\\w+\\(config-\\w+\\)#)\\s?$" ;
+
+	private static final String USER_PROMPT_PATTERN = "(User:|Username:)\\s?$";
+	private static final String PASSWORD_PROMPT_PATTERN = "(Password:)\\s?$";
 
 	private boolean authenticated = false;
 	private boolean enabled = false;
+
+
+	private Pattern userPromptPattern = Pattern.compile(USER_PROMPT_PATTERN);;
+	private Pattern passwordPromptPattern = Pattern.compile(PASSWORD_PROMPT_PATTERN);
 
 	/**
 	 * Create Session on the default Telnet tcp port-number of 23
@@ -91,19 +98,20 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 		if ( ! socket.isConnected() ) throw new SessionException("Not Connected!");
 		ReadData read = _read2prompt();
 
-		if ( read.getPrompt().equals("User:") ) {
+
+		if ( userPromptPattern.matcher(read.getPrompt()).find() ) {
 			if ( username == null ) throw new SessionException("Need username to Authenticate");
 			_sendln(username);
-			_read2prompt();
+			read = _read2prompt();
 		}
 
-		if ( read.getPrompt().equals("Password:")) {
+		if ( passwordPromptPattern.matcher(read.getPrompt()).find()) {
 			if ( password == null ) throw new SessionException("Need password to Authenticate");
 			_sendln(password);
 			read = _read2prompt();
 		}
 
-		if ( read.getPrompt().equals("User:") || read.getPrompt().equals("Password:") ) {
+		if ( userPromptPattern.matcher(read.getPrompt()).find() || passwordPromptPattern.matcher(read.getPrompt()).find() ) {
 			throw new SessionException("Authentication failed") ;
 		} else  {
             cmd("terminal length 0");
