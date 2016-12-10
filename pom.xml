@@ -34,7 +34,7 @@
 
   <groupId>dk.krakow.jnettelnet</groupId>
   <artifactId>jNetTelnet</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
   <packaging>jar</packaging>
 
   <name>jNetTelnet</name>

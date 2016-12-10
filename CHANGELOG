@@ -1,0 +1,4 @@
+
+1.3 / 2016-12-10
+==================
+  * Fixed: Stall when enable if already enabled. Added simple test client for cisco
