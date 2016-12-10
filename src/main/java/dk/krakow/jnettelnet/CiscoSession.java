@@ -50,10 +50,10 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 	private static final String ENABLED_PROMPT_CHR = "#";
 
 	/** String Containing the regex. to find prompts */
-	private static final String PROMPT_PATTERN = "(Username:|User:|Password:|\\w+[>#]|\\w+\\(config\\)#|\\w+\\(config-\\w+\\)#)\\s?$" ;
+	private static final String PROMPT_PATTERN = "([Uu]sername:|[Uu]ser:|[Pp]assword:|\\w+[>#]|\\w+\\(config\\)#|\\w+\\(config-\\w+\\)#)\\s?$" ;
 
-	private static final String USER_PROMPT_PATTERN = "(User:|Username:)\\s?$";
-	private static final String PASSWORD_PROMPT_PATTERN = "(Password:)\\s?$";
+	private static final String USER_PROMPT_PATTERN = "([Uu]ser:|[Uu]sername:)\\s?$";
+	private static final String PASSWORD_PROMPT_PATTERN = "([Pp]assword:)\\s?$";
 
 	private boolean authenticated = false;
 	private boolean enabled = false;
@@ -147,6 +147,10 @@ public class CiscoSession extends dk.krakow.jnettelnet.Session implements Sessio
 		try {
 			_sendln("enable");
 			ReadData read = _read2prompt();
+
+			// if we are already enabled just move along
+			if ( read.getPrompt().endsWith(ENABLED_PROMPT_CHR) ) return;
+
 			if ( read.getPrompt().equals("Password:") ) {
 				_sendln(password);
 			}
